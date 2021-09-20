@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-container fluid>
+                <v-row>
+                    <v-col>
+                        <v-file-input chips multiple label="File input w/ chips" @change="archivo"></v-file-input>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-card>
+                            <v-toolbar dark color="indigo">
+                                <v-toolbar-title> "{{archivo_cpp.nombre}}" </v-toolbar-title>
+                            </v-toolbar>
+                            <v-card-text>
+                                <h3 style="text-alig: center">Contenido general</h3>
+                            </v-card-text>
+                            <v-card-text> {{archivo_cpp.informacion}} </v-card-text>
+                            <v-card-text>
+                                <h3 style="text-alig: center">
+                                    Contenido separado por Espacios (" ")
+                                </h3>
+                            </v-card-text>
+                            <v-card-text>
+                                <div :class="[`text-h6 mb-${-1}`]" class="transition-swing"
+                                    v-for="(item,index) in unicos" :key="index" v-text="item"></div>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            vuetify: new Vuetify(),
+            data() {
+                return {
+                    archivo_cpp: {
+                        nombre: "Nombre del archivo",
+                        informacion: "Informacion del archivo",
+                    },
+                    unicos: [],
+                };
+            },
+            methods: {
+                archivo(evt) {
+                    this.archivo_cpp.nombre = evt[0].name;
+                    let file = evt;
+                    let reader = new FileReader();
+
+                    // Leemos el contenido del archivo seleccionado
+                    reader.onload = () => {
+                        this.archivo_cpp.informacion = reader.result;
+                        this.encontrar_palabras(this.archivo_cpp.informacion);
+                    
+                    };
+                    if (file[0]) {
+                        // This does not return the text. It just starts reading.
+                        // The onload handler is triggered when it is done and the result is available.
+                        reader.readAsText(file[0]);
+                    }
+                },
+                encontrar_palabras(str) {
+                    console.log(str)
+                    /*Para eliminar comentarios*/
+                    str = str.replace(/(\/\*\s*.*\s*\*\/|\/\/.*|\\\w)/g,"")
+                    console.log(str);
+                  
+                    // str = str.replace(/[&\\#,+=;!()$~%.'":*?<>{}/]/g, " ");
+                    // console.log(str);
+
+                    //Para eliminar espacios  (1 o mas)
+                    str = str.replace(/\s+/gm, " ");
+                    console.log(str);
+                    // str = str.replace(/(\r\n\t|\n|\r|\t)/gm, " ");
+                    
+                    //Separa por espacios y por algunos caracteres especiales para insertar en el vector
+                    str = str.split(/(\=\=|\+\+|\W|\s+)/gm);
+                    console.log(str);
+
+                    this.unicos = [];
+                    str.forEach((elemento) => {
+                        if (elemento != "") {
+                            this.unicos.push(elemento);
+                        }
+                        // if (!this.unicos.includes(elemento)) {
+                        //     this.unicos.push(elemento);
+                        // }
+                    });
+
+                    console.log(this.unicos);
+
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>
