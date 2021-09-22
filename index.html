@@ -79,7 +79,7 @@
                 encontrar_palabras(str) {
                     console.log(str)
                     /*Para eliminar comentarios*/
-                    str = str.replace(/(\/\*(\s*.*\s*)*\*\/|\/\/.*|\\\w)/g,"")
+                    str = str.replace(/(\/\*\s*.*\s*\*\/|\/\/.*|\\\w)/g,"")
                     console.log(str);
                   
                     // str = str.replace(/[&\\#,+=;!()$~%.'":*?<>{}/]/g, " ");
